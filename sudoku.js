@@ -176,6 +176,10 @@ $(function() {
 				value = sudoku[i][j].val();
 				if (!/^[1-9]?$/.test(value)) {
 					return false;
+				} else {
+					if (!checkPossibility(getOriginalValues(sudoku), parseInt(value), i, j, true)) {
+						return false;
+					}
 				}
 			}
 		}
