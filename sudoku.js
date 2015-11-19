@@ -100,6 +100,8 @@ $(function() {
 	    var values = getOriginalValues(sudoku);
 	    var originalValues = getOriginalValues(sudoku);
 
+	    var actions = Array()
+
 	    var l = 0;
 	    while (l < 9) {
 	        var c = 0;
@@ -113,12 +115,14 @@ $(function() {
 
 	                if (n < 10) {
 	                	values[l][c] = n;
-	                    sudoku[l][c].val(n);
+	                	actions.push({l: l, c: c, value: n})
+	                    //sudoku[l][c].val(n);
 
 	                    c++;
 	                } else {
 	                    values[l][c] = 0;
-	                    sudoku[l][c].value = "";
+	                    actions.push({l: l, c: c, value: ""})
+	                    //sudoku[l][c].value = "";
 
 	                    var coordRewind = rewind(l, c);
 	                    l = coordRewind.line;
@@ -135,6 +139,8 @@ $(function() {
 	        }
 	        l++;
 	    }
+
+	    return actions;
 	}
 
 	function boundSudoku() {
@@ -187,12 +193,27 @@ $(function() {
 		return true;
 	}
 
+	function updateCase(sudoku, actions, k) {
+		sudoku[actions[k].l][actions[k].c].val(actions[k].value)
+		$('#msg_success').text(String(k) + " operations")
+
+		k++;
+		if (k<actions.length) {
+			setTimeout(function() {
+				updateCase(sudoku, actions, k);
+			}, 50);
+		} else {
+			$('#msg_success').html($('#msg_success').text() + "<br />The sudoku was solved with success")
+		}
+	}
+
 	$('#btn_solve').click(function() {
 		sudoku = boundSudoku();
 
 		if (checkContentBeforeSolve(sudoku)) {
-			solve(sudoku);
-
+			actions = solve(sudoku);
+			updateCase(sudoku, actions, 0)
+			//showSudoku(sudoku);
 			if (sudokuValid(sudoku)) {
 				$('#msg_success').removeClass('hidden');
 			}
