@@ -212,8 +212,11 @@ $(function() {
 
 		if (checkContentBeforeSolve(sudoku)) {
 			actions = solve(sudoku);
-			updateCase(sudoku, actions, 0)
-			//showSudoku(sudoku);
+			
+			if (actions.length>0) {
+				updateCase(sudoku, actions, 0)
+			}
+
 			if (sudokuValid(sudoku)) {
 				$('#msg_success').removeClass('hidden');
 			}
