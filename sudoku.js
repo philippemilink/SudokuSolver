@@ -204,10 +204,13 @@ $(function() {
 			}, 50);
 		} else {
 			$('#msg_success').html($('#msg_success').text() + "<br />The sudoku was solved with success")
+			$('#btn_clear').removeAttr("disabled")
 		}
 	}
 
 	$('#btn_solve').click(function() {
+		$('#msg_error').addClass("hidden");
+		$('#btn_clear').attr({"disabled": "disabeld"})
 		sudoku = boundSudoku();
 
 		if (checkContentBeforeSolve(sudoku)) {
@@ -222,6 +225,7 @@ $(function() {
 			}
 		} else {
 			$('#msg_error').removeClass("hidden");
+			$('#btn_clear').removeAttr("disabled")
 		}
 	});
 
