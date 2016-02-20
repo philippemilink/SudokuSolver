@@ -206,7 +206,7 @@ $(function() {
 		if (k<actions.length) {
 			setTimeout(function() {
 				updateCase(sudoku, actions, k, graph);
-			}, 50);
+			}, 20);
 		} else {
 			$('#msg_success').html($('#msg_success').text() + "<br />The sudoku was solved with success")
 			$('#btn_clear').removeAttr("disabled")
