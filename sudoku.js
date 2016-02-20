@@ -172,7 +172,6 @@ $(function() {
 			}
 			originalValues.push(line);
 		}
-
 		return originalValues;
 	}
 
@@ -193,32 +192,78 @@ $(function() {
 		return true;
 	}
 
-	function updateCase(sudoku, actions, k) {
+	var myLineChart = null;
+
+	function updateCase(sudoku, actions, k, graph = []) {
 		sudoku[actions[k].l][actions[k].c].val(actions[k].value)
 		$('#msg_success').text(String(k) + " operations")
+
+		if (actions[k].value!="") {
+			graph.push((actions[k].l*9)+actions[k].c)
+		}
 
 		k++;
 		if (k<actions.length) {
 			setTimeout(function() {
-				updateCase(sudoku, actions, k);
-			}, 50);
+				updateCase(sudoku, actions, k, graph);
+			}, 20);
 		} else {
 			$('#msg_success').html($('#msg_success').text() + "<br />The sudoku was solved with success")
+			$('#btn_clear').removeAttr("disabled")
+
+			/** GRAPH **/
+			var ctx = $("#graph").get(0).getContext("2d");
+
+			labels = []
+			for (var i = 0; i<graph.length; ++i) {
+				labels.push("")
+			}
+
+		    var data = {
+			    labels: labels,
+			    datasets: [{
+		           	fillColor: "rgba(151,187,205,0.2)",
+	    			strokeColor: "rgba(151,187,205,1)",
+		            data: graph
+		        }]
+			};
+
+			var options = {
+				animation: false,
+				pointDot : false,
+				scaleOverride: true,
+				scaleSteps: 9,
+				scaleStepWidth: 9,
+				scaleStartValue: 0,
+				responsive: true,
+				showTooltips: false,
+				scaleShowVerticalLines: false
+			}
+		    myLineChart = new Chart(ctx).Line(data, options);
+		    /** END GRAPH **/
 		}
 	}
 
 	$('#btn_solve').click(function() {
+		$('#msg_error').addClass("hidden");
+		$('#btn_clear').attr({"disabled": "disabeld"})
 		sudoku = boundSudoku();
 
 		if (checkContentBeforeSolve(sudoku)) {
 			actions = solve(sudoku);
-			updateCase(sudoku, actions, 0)
-			//showSudoku(sudoku);
+			
+			if (actions.length>0) {
+				updateCase(sudoku, actions, 0)
+			}
+
 			if (sudokuValid(sudoku)) {
 				$('#msg_success').removeClass('hidden');
+				$('#graph').removeClass('hidden');
+				$('#btn_clear').removeAttr("disabled")
 			}
 		} else {
 			$('#msg_error').removeClass("hidden");
+			$('#btn_clear').removeAttr("disabled")
 		}
 	});
 
@@ -230,5 +275,9 @@ $(function() {
 		}
 		$('#msg_error').addClass("hidden");
 		$('#msg_success').addClass("hidden");
+		$('#graph').addClass("hidden");
+		if (myLineChart!=null) {
+			myLineChart.clear();
+		}
 	})
 });
