@@ -194,7 +194,7 @@ $(function() {
 
 	var myLineChart = null;
 
-	function updateCase(sudoku, actions, k, graph = []) {
+	function updateCase(sudoku, actions, k, graph) {
 		sudoku[actions[k].l][actions[k].c].val(actions[k].value)
 		$('#msg_success').text(String(k) + " operations")
 
@@ -253,7 +253,7 @@ $(function() {
 			actions = solve(sudoku);
 			
 			if (actions.length>0) {
-				updateCase(sudoku, actions, 0)
+				updateCase(sudoku, actions, 0, [])
 			}
 
 			if (sudokuValid(sudoku)) {
