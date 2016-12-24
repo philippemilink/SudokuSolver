@@ -279,5 +279,43 @@ $(function() {
 		if (myLineChart!=null) {
 			myLineChart.clear();
 		}
-	})
+	});
+
+	$('.case').keypress(function(e) {
+		// i and j are INTEGERS !
+		var i = parseInt($(this).attr('id')[0]);
+		var j = parseInt($(this).attr('id')[1]);
+
+		switch (e.keyCode) {
+			case 37: // Left
+				if (j == 0) {
+					$('#' + i + '8').focus();
+				} else {
+					$('#' + i + (j-1)).focus();
+				}
+				break;
+			case 38: // Top
+				if (i == 0) {
+					$('#8' + j).focus();
+				} else {
+					$('#' + (i-1) + j).focus();
+				}
+				break; 
+			case 39: // Right
+				if (j == 8) {
+					$('#' + i + '0').focus();
+				} else {
+					$('#' + i + (j+1)).focus();
+				}
+				break;
+			case 40: // Bottom
+
+				if (i == 8) {
+					$('#0' + j).focus();
+				} else {
+					$('#' + (i+1) + j).focus();
+				}
+				break;
+		}
+	});
 });
